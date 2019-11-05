@@ -1,0 +1,58 @@
+package ie.gmit.sw;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+
+public  class WordFrequency implements Comparable<WordFrequency>{
+	private String word;
+	private int frequency;
+	
+	public WordFrequency() {
+		
+	}
+	public WordFrequency(String word, Integer frequency) {
+		setWord(word);
+		setFrequency(frequency);
+	}
+
+	@Override
+	public String toString() {
+		return "WordFrequency [word=" + word + " frequency="+ frequency+"]";
+	}
+	
+	public String getWord() {
+		return word;
+	}
+	public void setWord(String word) {
+		this.word = word;
+	}
+	
+	public int getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(int frequency) {
+		this.frequency = frequency;
+	}
+	
+	Map<String, Integer> map = new HashMap<String, Integer>();
+	Queue<WordFrequency>q = new PriorityQueue<>();
+	
+	Set<String>keys = map.keySet();{
+		for(String key:keys) {
+			q.offer(new WordFrequency(key, frequency));
+		}
+	}
+	
+	@Override
+	public int compareTo(WordFrequency word) {
+		// TODO Auto-generated method stub
+		return word.frequency - this.frequency;
+	}
+
+
+}
+

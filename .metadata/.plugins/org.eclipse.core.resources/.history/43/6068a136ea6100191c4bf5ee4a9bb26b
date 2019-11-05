@@ -1,0 +1,62 @@
+package ie.gmit.sw;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+public class WordCloudImage {
+
+	private static final double MAX_FONT_SIZE = 100;
+	private static final double MIN_FONT_SIZE = 10;
+	
+	private BufferedImage image;
+	
+	public WordCloudImage() {
+		image = new BufferedImage(500, 400, BufferedImage.TYPE_4BYTE_ABGR);
+	}
+
+	public BufferedImage getImage() {
+		return image;
+	}
+	
+	public void drawString(Queue<WordFrequency> q, int maxWords) {
+		int j, counter = 0, max = 0, min = 0, offset = 150;
+		
+		Graphics2D graphics = image.createGraphics(); 
+
+		// Set the colour of the background
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, 500, 400);
+		
+		Iterator<WordFrequency> i = q.iterator(); 
+		
+		WordFrequency wordFreq = new WordFrequency();
+		
+		while (i.hasNext() && counter < maxWords) { 
+			j = i.next().getFrequency();
+			if (j > max) max = j;
+			if (j < min) min = j;
+			
+			while ((!q.isEmpty()) && counter < maxWords) {  
+				wordFreq = q.poll();
+				
+				graphics.setFont(new Font(Font.SERIF, Font.BOLD, scale(wordFreq.getFrequency(), min, max)));
+				graphics.setColor(Color.GRAY); // Accessing an array index is O(1)
+				graphics.drawString(wordFreq.getWord(), generate(0, 500 - offset), generate(0, 400));
+				counter++;
+			}	
+		}
+		graphics.dispose();
+	}
+	
+	// Scale a word in accordance with its frequency
+	private int scale(double freq, double min, double max) {
+		return (int)Math.ceil((MAX_FONT_SIZE - MIN_FONT_SIZE) * (freq - min) / (max - min) + MIN_FONT_SIZE);
+	}
+	
+	// Generate a random number between a given range
+	public static int generate(int min, int max) {
+		return ThreadLocalRandom.current().nextInt(min, max + 1);
+	}
+}

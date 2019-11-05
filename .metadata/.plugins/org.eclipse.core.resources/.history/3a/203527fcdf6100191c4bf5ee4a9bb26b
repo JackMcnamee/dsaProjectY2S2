@@ -1,0 +1,133 @@
+package ie.gmit.sw;
+
+import java.awt.Desktop;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+
+public class Menu {
+
+	private static final int DEFAULT_MAX_WORDS = 35;
+	
+	private static Scanner console = new Scanner(System.in);
+	
+	private String inputFileName;
+	private String url;
+	private String imageFileName;
+	private int maxWords;
+	private boolean contentIsFromFile;
+
+	public Menu() {
+		String contentType;
+		
+		System.out.println("============================================================================");
+		System.out.println("|                            Word Cloud Generator                          |");
+		System.out.println("============================================================================");
+		
+		do {
+			System.out.print("Do you want to parse a text file (f) or a URL (url)? ");
+			contentType = console.next().toUpperCase();
+		} while (!contentType.equals("F") && !contentType.equals("URL"));
+
+		// Set some defaults in case the user doesn't enter any options at the menu.
+		
+		if (contentType.equals("F")) {
+			contentIsFromFile = true;
+			
+			setInputFileName();
+			
+			// Set the imageFileName to be the same as the inputFileName.png by default
+			if (inputFileName.contains("."))
+				imageFileName = inputFileName.substring(0, inputFileName.lastIndexOf('.')) + ".png";	
+			else
+				imageFileName += ".png";
+		}	
+		else {
+			contentIsFromFile = false;
+			
+			//setURL();
+			
+			try {
+				//Document doc = Jsoup.connect(url).get(); 
+				//imageFileName = doc.title().substring(doc.title().lastIndexOf(" - ")).replace(" - ", "") + ".png";
+				imageFileName = removeInvalidChars(imageFileName).trim();
+				System.out.println(imageFileName);
+			} catch (Exception e) {
+				imageFileName = "WordcloudURL.png";
+			}
+		}
+		
+		maxWords = DEFAULT_MAX_WORDS;
+	}
+	
+	public String getInputFileName() {
+		return inputFileName;
+	}
+
+	public void setInputFileName() {
+		Scanner console = new Scanner(System.in);
+		String userInput;
+		boolean fileExists = false;
+		
+		do {	
+			System.out.print("Enter the name of the input file: ");
+			userInput = console.nextLine();
+
+			// verify that the file exists
+			if (new File(userInput).isFile())
+				fileExists = true;
+			else
+				System.out.printf("The file \"%s\" could not be found. Try again.\n", userInput);
+		} while (!fileExists);
+		
+		inputFileName = userInput;
+	}
+
+	public String getImageFileName() {
+		return imageFileName;
+	}
+	
+	// Set the file name of the word-cloud image to save.
+	public void setImageFileName() {
+		Scanner console = new Scanner(System.in);
+		boolean invalid = true;
+		
+		do {
+			System.out.print("Enter a name for the PNG file: ");
+			imageFileName = removeInvalidChars(console.nextLine()).trim();
+			
+			if (!imageFileName.isEmpty())
+				invalid = false;
+		} while (invalid);
+		
+		// Append .png to the filename entered
+		if (imageFileName.contains("."))
+			imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.')) + ".png";	
+		else
+			imageFileName += ".png";
+	}
+	
+	// Removes any illegal characters in (Windows) filename & replaces them with underscores.
+	private String removeInvalidChars(String filename) {
+		// Source: CoderCroc - https://stackoverflow.com/a/31564206
+		return filename.replaceAll("[\\\\\\\\/:*?\\\"<>|]", "_");
+	}
+	
+	public boolean isContentFromFile() {
+		if (contentIsFromFile)
+			return true;
+		else 
+			return false;
+	}
+
+	@Override
+	public String toString() {
+		return "Menu [inputFileName=" + inputFileName + ", url=" + url + ", imageFileName=" + imageFileName
+				+ ", maxWords=" + maxWords + ", contentIsFromFile=" + contentIsFromFile + "]";
+	}
+}

@@ -1,0 +1,30 @@
+package ie.gmit.sw;
+
+import java.io.*;
+import java.util.*;
+
+import javax.imageio.ImageIO;
+
+public class Runner {
+	
+	public static void main(String[] args) throws Exception {
+		
+		Menu menu = new Menu();
+		menu.showMenu();
+		
+		Parser parser = new Parser();
+		parser.parseIgnoreFile();
+		
+		if (menu.isContentFromFile())
+			parser.parse(new FileInputStream(menu.getUserFileName()));
+
+		Queue<WordFrequency> wordQ = parser.getWordQueue();
+		
+		WordCloudImage ig = new WordCloudImage();
+		ig.drawWords(wordQ, menu.getMaxWords());
+		
+		ImageIO.write(ig.getImage(), "png", new File(menu.getUserImageName()));
+	}
+	
+	
+}

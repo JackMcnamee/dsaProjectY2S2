@@ -1,0 +1,93 @@
+package ie.gmit.sw;
+
+import java.io.*;
+import java.util.*;
+
+public class Parser {
+	
+	private static final String ignoreThisFile = "ignorewords.txt";
+	
+	private static Scanner console = new Scanner(System.in);
+	
+	private Set<String> ignoreWords = new HashSet<>();
+	
+	public static String getIgnoreFileName() {
+		return ignoreThisFile;
+	}
+	
+	public void parseIgnoreFile() {
+		try {
+			BufferedReader ignoreFile = new BufferedReader(new FileReader(ignoreThisFile));
+			String next = null;
+
+			while ((next = ignoreFile.readLine()) != null) {
+
+				if (next.isEmpty())
+					continue;
+
+				ignoreWords.add(next.toLowerCase()); // Adding to a HashSet is O(1)
+			}
+			ignoreFile.close();
+		} catch (IOException e) {
+			// no ignorewords.txt file found
+			System.out.println(ignoreThisFile+" file was not found. Proceed anyway (y/N)? ");
+
+			if (Character.toUpperCase(console.next().charAt(0)) != 'Y')
+				System.exit(0);
+		}
+	}
+	
+	public void parse(InputStream in) throws Exception 
+	{
+		BufferedReader userFile = new BufferedReader(new InputStreamReader(in));
+		String next = null;
+		
+		while((next = userFile.readLine())!=null) {
+			String[] words = next.split(" ");
+			for(String word:words) {
+				if(!ignoreWords.contains(word)) {
+					updateMap(word);
+				}
+			}
+		} // while
+		sortMap();
+		in.close();
+	} // parse
+	
+	private Map<String, Integer> wordMap = new HashMap<>();
+	
+	public void updateMap(String word) {
+		// Word word = new Word(next);
+		
+		int freq;
+		
+		if(wordMap.containsKey(word)) {
+			freq = wordMap.get(word);
+			wordMap.put(word, ++freq);
+		}
+		else {
+			wordMap.put(word,  1);
+		}
+			
+	} 
+	
+	public int numUniqueWordsRead() {
+		return wordMap.size();
+	}
+	
+	private Queue<WordFrequency> q = new PriorityQueue<>();
+	
+	public void sortMap() {
+		Set<String> keys = wordMap.keySet();
+		
+		for(String key : keys) {
+			q.offer(new WordFrequency(key, wordMap.get(key)));
+		}
+			
+	}
+	
+	public Queue<WordFrequency> getWordQueue() {
+		return q;
+	}
+
+}

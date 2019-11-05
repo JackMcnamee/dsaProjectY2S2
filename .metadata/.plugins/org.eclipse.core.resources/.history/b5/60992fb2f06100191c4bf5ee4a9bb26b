@@ -1,0 +1,128 @@
+package ie.gmit.sw;
+
+import java.io.*;
+import java.util.*;
+
+public class Menu 
+{
+	private static Scanner console = new Scanner(System.in);
+	
+	// instance variables
+	private String userFile;
+	private String userImage;
+	private int maxWords;
+	private boolean contentIsFromFile;
+	
+	public Menu() {
+		
+	}
+	
+	public void showMenu() 
+	{
+		int option;
+		
+		System.out.println("Welcome to the WordCloud Generator");
+		System.out.println("Please enter 1 to parse a file or -1 to exit ");
+		option = console.nextInt();
+		
+		if(option == 1) {
+
+			setUserFileName();
+			setUserImageName();
+			setMaxWords();
+			contentIsFromFile= true;
+		}
+		else if(option == -1)
+		{
+			System.exit(0);
+			
+		}
+		else
+		{
+			System.out.println("Incorrect option / try again");
+			showMenu();
+		}
+		
+		System.out.println("Your word cloud has been created!");
+		
+	}
+	
+	// returns file name input by user (string)
+	public String getUserFileName() 
+	{
+		return userFile;
+	}
+
+	public void setUserFileName() 
+	{
+		Scanner console = new Scanner(System.in);
+		String userFileName;
+		boolean file = false;
+		
+		System.out.println("Please enter the name of the file: ");
+		userFileName = console.nextLine();
+
+		while(!file) 
+		{
+			if (new File(userFileName).isFile()) 
+			{
+				file = true;
+			}	
+			else 
+			{
+				System.out.println("The file "+userFileName+" could not be found.");
+				System.out.println("Please enter the name of the file: ");
+				userFileName = console.nextLine();
+			}
+			
+		}
+		
+		userFile = userFileName;
+	}
+	
+	// returns image name input by user (string)
+	public String getUserImageName() 
+	{ 
+		return userImage;
+	}
+	
+	public void setUserImageName() 
+	{
+		Scanner console = new Scanner(System.in);
+		String userImageName;
+		
+		System.out.println("Please enter the name for your wordcloud image: ");
+		userImageName = console.nextLine();
+			
+		userImageName += ".png";
+		userImage = userImageName;
+		
+	}
+	
+	// returns amount of words requested by user (int)
+	public int getMaxWords() 
+	{
+		return maxWords;
+	}
+	
+	public void setMaxWords() 
+	{
+		Scanner console = new Scanner(System.in);
+		int maxWordsAllowed;
+		
+		System.out.println("Please enter the amount of words in your wordcloud: ");
+		maxWordsAllowed = console.nextInt();
+		
+		maxWords = maxWordsAllowed;
+		
+	}
+	
+	public boolean isContentFromFile() 
+	{
+		if (contentIsFromFile)
+			return true;
+		else 
+			return false;
+	}
+	
+}

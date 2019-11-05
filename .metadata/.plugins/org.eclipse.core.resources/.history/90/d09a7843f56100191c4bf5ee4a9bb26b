@@ -1,0 +1,75 @@
+package ie.gmit.sw;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+public class WordCloudImage 
+{
+
+	// instance variables
+	private static final double maxFont = 50;
+	private static final double minFont = 10;
+	
+	private BufferedImage image;
+	
+	public WordCloudImage() 
+	{
+		image = new BufferedImage(600, 300, BufferedImage.TYPE_4BYTE_ABGR);
+	}
+
+	public BufferedImage getImage() 
+	{
+		return image;
+	}
+	
+	// https://www.java-forums.org/java-awt/9352-how-draw-text-java.html
+	public void drawString(Queue<WordFrequency> q, int maxWords) 
+	{
+		// variables
+		int i;
+		int count = 0;
+		int max = 0, min = 0;
+		
+		Graphics2D graphics = image.createGraphics(); 
+
+		// bg colour
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, 500, 400);
+		
+		Iterator<WordFrequency> iterator = q.iterator(); 
+		
+		WordFrequency wordFrequency = new WordFrequency();
+		
+		while (iterator.hasNext() && count < maxWords) 
+		{ 
+			i = iterator.next().getFrequency();
+			if (i > max) max = i;
+			if (i < min) min = i;
+			
+			while ((!q.isEmpty()) && count < maxWords)
+			{  
+				wordFrequency = q.poll();
+				
+				graphics.setFont(new Font(Font.SERIF, Font.BOLD, fontSize(wordFrequency.getFrequency(), min, max)));
+				graphics.setColor(Color.GRAY); 
+				graphics.drawString(wordFrequency.getWord(), random(0, 500), random(0, 400));
+				count++;
+			}	
+		}
+		graphics.dispose();
+	}
+	
+	// font size for word adjusted by frequency
+	private int fontSize(double freq, double min, double max) 
+	{
+		return (int)Math.ceil((maxFont - minFont) * (freq - min) / (max - min) + minFont);
+	}
+	
+	// random number between min, max
+	public static int random(int min, int max) 
+	{
+		return ThreadLocalRandom.current().nextInt(min, max + 1);
+	}
+}

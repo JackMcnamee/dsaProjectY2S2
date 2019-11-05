@@ -1,0 +1,96 @@
+package ie.gmit.sw;
+
+import java.io.*;
+import java.util.*;
+
+public class Menu {
+	private static Scanner console = new Scanner(System.in);
+	
+	private String userFile;
+	private String userImage;
+	int maxWords = 50;
+	private boolean contentIsFromFile;
+	
+	public Menu() {
+		
+	}
+	
+	public void showMenu() {
+		
+		int option;
+		
+		System.out.println("Welcome to the WordCloud Generator");
+		System.out.println("Please enter 1 to parse a file or -1 to exit ");
+		option = console.nextInt();
+		
+		if(option == 1) {
+
+			setUserFileName();
+			setUserImageName();
+			contentIsFromFile = true;
+		}
+		else if(option == -1)
+		{
+			System.exit(0);
+			
+		}
+		else
+		{
+			System.out.println("Incorrect option / try again");
+			showMenu();
+		}
+		
+		
+		System.out.println("Your word cloud has been created!");
+		
+	}
+	
+	public String getUserFileName() {
+		return userFile;
+	}
+
+	public void setUserFileName() {
+		Scanner console = new Scanner(System.in);
+		String userFileName;
+		boolean fileExists = false;
+		
+		System.out.println("Please enter the name of the file: ");
+		userFileName = console.nextLine();
+
+		while(!fileExists) {
+			if (new File(userFileName).isFile()) {
+				fileExists = true;
+			}	
+			else {
+				System.out.println("The file "+userFileName+" could not be found.");
+				System.out.println("Please enter the name of the file: ");
+				userFileName = console.nextLine();
+			}
+			
+		}
+		userFile = userFileName;
+	}
+	
+	public String getUserImageName() {
+		return userImage;
+	}
+	
+	public void setUserImageName() {
+		Scanner console = new Scanner(System.in);
+		String userImageName;
+		
+		System.out.println("Please enter the name for the wordcloud image(followed by .png): ");
+		userImageName = console.nextLine();
+			
+		userImageName = userFile.substring(0, userFile.lastIndexOf('.')) + ".png";
+		userImage = userImageName;
+	}
+	
+	public boolean isContentFromFile() {
+		if (contentIsFromFile)
+			return true;
+		else 
+			return false;
+	}
+	
+}

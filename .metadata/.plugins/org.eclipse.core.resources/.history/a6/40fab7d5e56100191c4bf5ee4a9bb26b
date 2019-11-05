@@ -1,0 +1,45 @@
+package ie.gmit.sw;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Queue;
+import java.util.Scanner;
+
+import javax.imageio.ImageIO;
+
+public class Runner {
+	
+	private static Scanner console = new Scanner(System.in);
+	
+	public static void main(String[] args) throws Exception {
+		
+		//double runTime;
+		
+		Menu menu = new Menu();
+		menu.showMenu();
+		
+		Parser parser = new Parser();
+		parser.parseIgnoreFile();
+		
+		//runTime = System.currentTimeMillis();
+		
+		if (menu.isContentFromFile())
+			parser.parse(new FileInputStream(menu.getUserFileName()));
+		//else
+			//parser.parseInput(menu.getURL());
+
+		Queue<WordFrequency> wordQ = parser.getWordQueue();
+		
+		//outputToFile(wordQ);
+		
+		WordCloudImage ig = new WordCloudImage();
+		ig.drawWords(wordQ, menu.maxWords);
+		ImageIO.write(ig.getImage(), "png", new File(menu.getUserImageName()));
+		
+	}
+	
+	
+}
